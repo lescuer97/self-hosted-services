@@ -5,6 +5,10 @@ services:
     container_name: "traefik"
     restart: unless-stopped
     command:
+      - "--log.level=DEBUG"
+      - "--accesslog=true" # print access-logs
+      - "--api" # enable dashboard
+      - "--api.debug=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
@@ -80,7 +84,7 @@ services:
       - "traefik.http.routers.nextcloud.middlewares=nextcloud,nextcloud_redirect,nextcloud-https"
       - "traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUD_HOSTNAME}`)"
       - "traefik.http.routers.nextcloud.tls.certresolver=selfhostedservices"
-      - "traefik.http.services.nextcloud.loadbalancer.server.port=8080"
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
       - "traefik.http.middlewares.nextcloud.headers.customRequestHeaders.X-Forwarded-Proto=https"
       - "traefik.http.middlewares.nextcloud-https.redirectscheme.scheme=https"
       - "traefik.http.routers.nextcloud-http.entrypoints=web"
